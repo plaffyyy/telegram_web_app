@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Telegram Web App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #0088cc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #005f7f;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome to My Web App!</h1>
+<p id="user-info">Loading user data...</p>
+<button class="button" id="send-data">Send Data to Bot</button>
+
+<script>
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
+
+    // Разворачиваем Web App на полный экран
+    tg.expand();
+
+    // Получаем информацию о пользователе из Telegram
+    const user = tg.initDataUnsafe.user;
+
+    // Выводим приветствие пользователю
+    const userInfo = document.getElementById('user-info');
+    userInfo.textContent = `Hello, ${user ? user.first_name : 'Guest'}!`;
+
+    // Добавляем обработчик на кнопку
+    const sendDataButton = document.getElementById('send-data');
+    sendDataButton.addEventListener('click', () => {
+        const dataToSend = {
+            message: "Hello from Web App!",
+            userId: user ? user.id : null
+        };
+
+        // Отправляем данные обратно в бот
+        tg.sendData(JSON.stringify(dataToSend));
+
+        // Показываем уведомление
+        tg.showAlert('Data sent to bot!');
+    });
+
+    // Уведомление в случае закрытия Web App
+    tg.onEvent('web_app_close', () => {
+        console.log("Web App was closed");
+    });
+</script>
+</body>
+</html>
